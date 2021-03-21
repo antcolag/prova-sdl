@@ -1,11 +1,35 @@
 #include "App.hpp"
 
-std::thread & App::run(){
-	loop = std::thread {
+void App::run(){
+	event_thread = std::thread {
 		&EventHandler::loop,
 		eventHandler.get()
 	};
-	return loop;
+	render_thread = std::thread {
+		[&](){
+			SDL_Texture * texture = IMG_LoadTexture(
+				renderer.get(),
+				"assets/soil.png"
+			);
+			if(!texture) {
+				throw std::runtime_error(
+					std::string{
+						"Error initializing texture"
+					} +
+					": " +
+					SDL_GetError()
+				);
+			}
+			do {
+				SDL_RenderClear(renderer.get());
+				SDL_RenderCopy(renderer.get(), texture, nullptr, nullptr);
+				SDL_RenderPresent(renderer.get());
+			} while(eventHandler.get()->last.load().type != SDL_QUIT);
+		}
+	};
+
+	event_thread.join();
+	render_thread.join();
 }
 
 
@@ -42,7 +66,7 @@ eventHandler(eventHandler)
 	if(videoErr){
 		throw std::runtime_error(
 			std::string{
-				"Error initializing video "
+				"Error initializing video"
 			} +
 			std::to_string(videoErr) +
 			": " +
@@ -53,7 +77,7 @@ eventHandler(eventHandler)
 	if(!IMG_Init(IMG_INIT_PNG)) {
 		throw std::runtime_error(
 			std::string{
-				"Error initializing images "
+				"Error initializing images"
 			} +
 			": " +
 			SDL_GetError()

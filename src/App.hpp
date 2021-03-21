@@ -14,7 +14,6 @@ struct App {
 	std::shared_ptr<SDL_Window> window;
 	std::shared_ptr<SDL_Renderer> renderer;
 	std::shared_ptr<EventHandler> eventHandler;
-	std::thread loop;
 
 	App(
 		const std::string & title,
@@ -25,5 +24,10 @@ struct App {
 
 	~App();
 
-	std::thread & run();
+	void run();
+
+	private:
+	std::thread event_thread;
+	std::thread render_thread;
+
 };

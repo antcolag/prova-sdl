@@ -12,4 +12,4 @@ release: $(program_parts)
 	g++ $(lsdl_flags) -std=c++20 -m64 -O3 -o release *.o ./src/*.o
 
 clean:
-	rm -r *.o
+	rm -f $(program_parts)

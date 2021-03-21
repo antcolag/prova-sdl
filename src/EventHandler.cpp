@@ -1,5 +1,8 @@
 #include "EventHandler.hpp"
 
+
+#include<iostream>
+
 void EventHandler::loop() {
 	SDL_Event sdlEvent;
 	do {

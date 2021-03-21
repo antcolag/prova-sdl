@@ -1,8 +1,15 @@
-debug: main.o ./src/App.o
-	g++ -lSDL2 -lpthread -latomic -g -Wall -m64 -std=c++20 -o debug *.o ./src/*.o
+lsdl_flags = -lSDL2 -lSDL2main -lSDL2_image -lpthread -latomic -pedantic
 
-release: main.o ./src/App.o
-	g++ -lSDL2 -lpthread -latomic -O3 -std=c++20 -o release *.o ./src/*.o
+program_parts = main.o ./src/App.o ./src/EventHandler.o
+
+debug: $(program_parts)
+	g++ $(lsdl_flags) -std=c++20 -m64 -g -Wall -o debug *.o ./src/*.o
+
+profile: $(program_parts)
+	g++ $(lsdl_flags) -std=c++20 -m64 -p -Wall -o debug *.o ./src/*.o
+
+release: $(program_parts)
+	g++ $(lsdl_flags) -std=c++20 -m64 -O3 -o release *.o ./src/*.o
 
 clean:
-	rm main.o ./src/App.o
+	rm -r *.o

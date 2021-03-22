@@ -8,6 +8,7 @@
 #include<thread>
 #include<functional>
 #include "EventHandler.hpp"
+#include "Entity.hpp"
 
 
 struct App {
@@ -23,6 +24,8 @@ struct App {
 	);
 
 	~App();
+
+	void renderLoop();
 
 	void run();
 

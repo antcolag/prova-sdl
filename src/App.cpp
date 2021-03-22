@@ -1,37 +1,7 @@
 #include "App.hpp"
 
-void App::run(){
-	event_thread = std::thread {
-		&EventHandler::loop,
-		eventHandler.get()
-	};
-	render_thread = std::thread {
-		[&](){
-			SDL_Texture * texture = IMG_LoadTexture(
-				renderer.get(),
-				"assets/soil.png"
-			);
-			if(!texture) {
-				throw std::runtime_error(
-					std::string{
-						"Error initializing texture"
-					} +
-					": " +
-					SDL_GetError()
-				);
-			}
-			do {
-				SDL_RenderClear(renderer.get());
-				SDL_RenderCopy(renderer.get(), texture, nullptr, nullptr);
-				SDL_RenderPresent(renderer.get());
-			} while(eventHandler.get()->last.load().type != SDL_QUIT);
-		}
-	};
 
-	event_thread.join();
-	render_thread.join();
-}
-
+#include<iostream>
 
 App::App(
 	const std::string & title,
@@ -88,3 +58,31 @@ eventHandler(eventHandler)
 App::~App(){
 	SDL_Quit();
 }
+
+
+void App::renderLoop() {
+	Entity grass {renderer, "assets/soil.png", {0,0,32,32}};
+
+	do {
+		auto r = renderer.get();
+		SDL_RenderClear(r);
+		grass.render(std::make_shared<SDL_Rect>(SDL_Rect{0,0,32,32}));
+		SDL_RenderPresent(r);
+	} while(eventHandler.get()->last.load().type != SDL_QUIT);
+}
+
+
+void App::run(){
+	event_thread = std::thread {
+		&EventHandler::loop,
+		eventHandler.get()
+	};
+	render_thread = std::thread {
+		&App::renderLoop,
+		this
+	};
+
+	event_thread.join();
+	render_thread.join();
+}
+

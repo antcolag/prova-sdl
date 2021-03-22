@@ -25,7 +25,7 @@ struct App {
 
 	~App();
 
-	void renderLoop();
+	void render();
 
 	void run();
 

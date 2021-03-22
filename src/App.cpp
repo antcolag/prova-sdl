@@ -60,7 +60,7 @@ App::~App(){
 }
 
 
-void App::renderLoop() {
+void App::render() {
 	Entity grass {renderer, "assets/soil.png", {0,0,32,32}};
 
 	do {
@@ -78,7 +78,7 @@ void App::run(){
 		eventHandler.get()
 	};
 	render_thread = std::thread {
-		&App::renderLoop,
+		&App::render,
 		this
 	};
 

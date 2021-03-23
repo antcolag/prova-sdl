@@ -62,11 +62,12 @@ App::~App(){
 
 void App::render() {
 	Entity grass {renderer, "assets/soil.png", {0,0,32,32}};
-
+	float y = 0;
 	do {
 		auto r = renderer.get();
 		SDL_RenderClear(r);
-		grass.render(std::make_shared<SDL_Rect>(SDL_Rect{0,0,32,32}));
+		grass.render();
+		grass.update({0.0, y += 0.1});
 		SDL_RenderPresent(r);
 	} while(eventHandler.get()->last.load().type != SDL_QUIT);
 }

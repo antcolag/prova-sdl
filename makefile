@@ -14,12 +14,11 @@ profile: init_debug $(program_parts)
 	g++ $(lsdl_flags) -o profile *.o ./src/*.o
 
 release: CXXFLAGS += -O3
-release: init_debug $(program_parts)
+release: $(program_parts)
 	g++ $(lsdl_flags) -o release *.o ./src/*.o
 
 clean:
 	rm -f $(program_parts)
-
 
 init_debug:
 	$(eval CXXFLAGS += $(debug_flag))
